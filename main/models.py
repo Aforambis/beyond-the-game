@@ -41,7 +41,7 @@ class Product(models.Model):
     match_date = models.DateField(blank=True, null=True)             
     
     def __str__(self):
-        club_info = f"{self.club}" if self.club else club_info = ""
+        club_info = f"{self.club}" if self.club else ""
         return f"{self.name} {club_info} - Starts from IDR {self.price:,.0f}"
     
     @property
