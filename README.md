@@ -25,9 +25,10 @@ PBP F
       -> Saya membuat file urls.py di main secara manual untuk menghubungkan fungsi view dengan URL. Jadinya, ketika user mengakses root URL (/), Django akan memanggil fungsi 
          show_main dan menampilkan halaman main.html.
    g. Melakukan deployment ke PWS terhadap aplikasi yang sudah dibuat sehingga nantinya dapat diakses oleh teman-temanmu melalui Internet.
-      -> 
+      -> Saya membuat branch master khusus untuk PWS, dan branch main khusus untuk GitHub. Ini saya lakukan agar push ke PWS tidak mengganggu GitHub. Di settings.py, saya 
+         menambahkan domain PWS ke ALLOWED_HOSTS dan memastikan template HTML (main.html) tersedia agar server dapat me-render view. Setelah itu, saya melakukan push ke PWS, yang otomatis membuild Docker image dan menjalankan server Django. Hasilnya, aplikasi berhasil berjalan di URL https://rusydan-mujtaba-beyondthegame.pbp.cs.ui.ac.id dan dapat diakses teman-teman melalui internet.
    h. Membuat sebuah README.md yang berisi tautan menuju aplikasi PWS yang sudah di-deploy, serta jawaban dari beberapa pertanyaan berikut.
-      -> 
+      -> https://rusydan-mujtaba-beyondthegame.pbp.cs.ui.ac.id/
 
 2. Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan    
    berkas html.
