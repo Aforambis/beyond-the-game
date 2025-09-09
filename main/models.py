@@ -1,8 +1,20 @@
 from django.db import models
+from django.utils import timezone
 import uuid
 
 class AuctionSeason(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+
+    def __str__(self):
+        return self.name
     
+    @property
+    def is_active(self):
+        now = timezone.now()
+        return self.start_date <= now <= self.end_date
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
