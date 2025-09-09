@@ -14,8 +14,8 @@ Saya menambahkan kode 'path('', include('main.urls'))' di file urls.py pada root
 
 #### d. Membuat model pada aplikasi main dengan nama Product dan memiliki atribut wajib sebagaimana tercantum di soal.
 Saya membuat model Product di models.py dengan field sesuai instruksi, serta beberapa field tambahan, seperti club, player, dan match date. Selain itu, saya juga menambahkan dua model tambahan sebagai berikut.
-1. **'AuctionSeason'**: untuk mengelola periode auction tertentu, dengan atribut nama season, start_date, dan end_date.
-2. **'Bid'**: untuk menyimpan data penawaran user terhadap produk tertentu, dengan atribut user, product, amount, dan created_at.
+1. **'AuctionSeason'** untuk mengelola periode auction tertentu, dengan atribut nama season, start_date, dan end_date.
+2. **'Bid'** untuk menyimpan data penawaran user terhadap produk tertentu, dengan atribut user, product, amount, dan created_at.
 Kedua model ini saya tambahkan agar sistem yang saya buat lebih sesuai dengan konsep auction/pelelangan.
 
 #### e. Membuat sebuah fungsi pada views.py untuk dikembalikan ke dalam sebuah template HTML yang menampilkan nama aplikasi serta nama dan kelas kamu.
@@ -28,11 +28,11 @@ Saya membuat file urls.py di main secara manual untuk menghubungkan fungsi view 
 Saya membuat branch master khusus untuk PWS, dan branch main khusus untuk GitHub. Ini saya lakukan agar push ke PWS tidak mengganggu GitHub. Di settings.py, saya menambahkan domain PWS ke ALLOWED_HOSTS dan memastikan template HTML (main.html) tersedia agar server dapat me-render view. Setelah itu, saya melakukan push ke PWS, yang otomatis membuild Docker image dan menjalankan server Django. Hasilnya, aplikasi berhasil berjalan di URL https://rusydan-mujtaba-beyondthegame.pbp.cs.ui.ac.id dan dapat diakses teman-teman melalui internet.
 
 #### h. Membuat sebuah README.md yang berisi tautan menuju aplikasi PWS yang sudah di-deploy, serta jawaban dari beberapa pertanyaan berikut.
-[Aplikasi PWS](https://rusydan-mujtaba-beyondthegame.pbp.cs.ui.ac.id/)
+[Tautan menuju aplikasi PWS](https://rusydan-mujtaba-beyondthegame.pbp.cs.ui.ac.id/)
 ---
 
 ## 2. Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.
-![Bagan Alur Django](images/alur-django.png)
+![Bagan Alur Django](images/alur-django.jpg)
 Kaitan antara urls.py, views.py, models.py, dan berkas html sebagai berikut.
 1. HTTP request: user mengirimkan request lewat browser
 2. Forward request: Django menerima request tersebut, lalu urls.py akan mencocokkan dengan fungsi view yang sesuai.
