@@ -152,8 +152,8 @@ Tutorial yang diberikan sudah sangat jelas dan terstruktur secara _step-by-step_
 
 | JSON                                     | XML                                    |
 | ---------------------------------------- | -------------------------------------- |
-| ![Postman JSON](images/postman-json.png) | ![Postman XML](images/postman-xml.png) |
+| ![Postman JSON](../images/postman-json.png) | ![Postman XML](../images/postman-xml.png) |
 
 | JSON by ID                                           | XML by ID                                          |
 | ---------------------------------------------------- | -------------------------------------------------- |
-| ![Postman JSON by ID](images/postman-json-by-id.png) | ![Postman XML by ID](images/postman-xml-by-id.png) |
+| ![Postman JSON by ID](../images/postman-json-by-id.png) | ![Postman XML by ID](../images/postman-xml-by-id.png) |
