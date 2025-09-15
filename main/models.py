@@ -36,6 +36,7 @@ class Product(models.Model):
     thumbnail = models.URLField(blank=True, null=True)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)    
     is_featured = models.BooleanField(default=False)
+
     club = models.CharField(max_length=100, blank=True, null=True)  
     player = models.CharField(max_length=100, blank=True, null=True) 
     match_date = models.DateField(blank=True, null=True)             
@@ -43,7 +44,7 @@ class Product(models.Model):
     def __str__(self):
         club_info = f"{self.club}" if self.club else ""
         return f"{self.name} {club_info} - Starts from IDR {self.price:,.0f}"
-    
+
     @property
     def highest_bid(self):
         return self.bids.order_by('-amount').first()
@@ -52,7 +53,7 @@ class Product(models.Model):
     def current_price(self):
         highest = self.highest_bid
         return highest.amount if highest else self.price
-    
+
 class Bid(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="bids")
