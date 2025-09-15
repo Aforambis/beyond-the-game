@@ -150,10 +150,10 @@ Tutorial yang diberikan sudah sangat jelas dan terstruktur secara _step-by-step_
 
 ### 7. Screenshot hasil akses URL pada Postman
 
-| JSON                                     | XML                                    |
-| ---------------------------------------- | -------------------------------------- |
-| ![Postman JSON](../images/postman-json.png) | ![Postman XML](../images/postman-xml.png) |
+| JSON                                           | XML                                          |
+| ---------------------------------------------- | -------------------------------------------- |
+| ![Postman JSON](../../images/postman-json.png) | ![Postman XML](../../images/postman-xml.png) |
 
-| JSON by ID                                           | XML by ID                                          |
-| ---------------------------------------------------- | -------------------------------------------------- |
-| ![Postman JSON by ID](../images/postman-json-by-id.png) | ![Postman XML by ID](../images/postman-xml-by-id.png) |
+| JSON by ID                                                 | XML by ID                                                |
+| ---------------------------------------------------------- | -------------------------------------------------------- |
+| ![Postman JSON by ID](../../images/postman-json-by-id.png) | ![Postman XML by ID](../../images/postman-xml-by-id.png) |
