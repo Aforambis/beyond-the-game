@@ -1,20 +1,26 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Daftar Produk</title>
-  </head>
-  <body>
-    <h1>Daftar Produk</h1>
-    <a href="{% url 'add_product' %}">Add Product</a>
-    <hr />
+{% extends 'base.html' %}
 
-    <ul>
-      {% for product in products %}
-      <li>
-        {{ product.name }} - Rp{{ product.price }}
-        <a href="{% url 'product_detail' product.id %}">Detail</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </body>
-</html>
+{% block meta %}
+<title>Daftar Produk</title>
+{% endblock meta %}
+
+{% block content %}
+<h1>Daftar Produk</h1>
+
+<a href="{% url 'main:show_products' %}?filter=all"><button class="btn">All Products</button></a>
+<a href="{% url 'main:show_products' %}?filter=my"><button class="btn">My Products</button></a>
+
+<a href="{% url 'main:add_product' %}"><button class="btn">Add Product</button></a>
+<hr />
+
+<ul>
+  {% for product in products %}
+  <li>
+    {{ product.name }} - Rp{{ product.price }}
+    <a href="{% url 'main:product_detail' product.id %}">Detail</a>
+  </li>
+  {% empty %}
+  <li>No products yet.</li>
+  {% endfor %}
+</ul>
+{% endblock content %}

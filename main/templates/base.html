@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  {% block meta %}<title>Beyond The Game</title>{% endblock meta %}
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    nav a { margin-right: 10px; }
+    .btn { padding: 6px 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="{% url 'main:show_main' %}">Home</a>
+    <a href="{% url 'main:show_products' %}">Products</a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'main:add_product' %}">Add Product</a>
+      <a href="{% url 'main:logout' %}">Logout</a>
+    {% else %}
+      <a href="{% url 'main:login' %}">Login</a>
+      <a href="{% url 'main:register' %}">Register</a>
+    {% endif %}
+  </nav>
+  <hr />
+  {% block content %}{% endblock content %}
+  <hr />
+  <footer>Beyond The Game © 2025</footer>
+</body>
+</html>

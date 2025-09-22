@@ -18,6 +18,7 @@ class AuctionSeason(models.Model):
         return self.start_date <= now <= self.end_date
 
 class Product(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     CATEGORY_CHOICES = [
         ('jersey', 'Match-Worn Jersey'),
         ('shoes', 'Match-Worn Shoes'),
