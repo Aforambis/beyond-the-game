@@ -68,7 +68,7 @@ Langkah-langkah yang saya lakukan:
 
    - Membuat `register`, `login_user`, `logout_user`.
    - Menyimpan waktu login di cookie `last_login`
-   - Menampilkan cookies `last_login` di template `show_main`.
+   - Menampilkan cookies `last_login` di template `show_main` yang akan dihapus ketika logout.
    - Membuat dua template tambahan, yaitu auction season (`add_auction_season`) dan place bid (`place_bid`).
 
 3. **Commit dan Push ke GitHub**
