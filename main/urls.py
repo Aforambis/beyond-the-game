@@ -2,7 +2,7 @@ from django.urls import path
 from .views import show_main, show_json, show_xml, show_json_by_id, show_xml_by_id, show_products, product_detail, add_product
 from main.views import register, login_user
 from main.views import logout_user
-from .views import add_auction_season, bid_product
+from .views import add_auction_season, place_bid
 
 app_name = 'main'
 
@@ -19,5 +19,5 @@ urlpatterns = [
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
     path('seasons/add/', add_auction_season, name='add_season'),
-    path('products/<uuid:id>/bid/', bid_product, name='bid_product'),
+    path('products/<uuid:id>/bid/', place_bid, name='place_bid'),
 ]

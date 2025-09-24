@@ -73,3 +73,12 @@ Langkah-langkah yang saya lakukan:
 
 3. **Commit dan Push ke GitHub**
    - Setelah semua berjalan, saya melakukan `git add`, `git commit -m`, dan `git push origin main` untuk mengunggah perubahan ke repository GitHub.
+
+### Credentials akun user
+User 1:
+- username:
+- password: 
+
+User 2:
+- username:
+- password:
