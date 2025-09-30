@@ -3,6 +3,7 @@ from .views import show_main, show_json, show_xml, show_json_by_id, show_xml_by_
 from main.views import register, login_user
 from main.views import logout_user
 from .views import add_auction_season, place_bid
+from .views import delete_product, edit_product
 
 app_name = 'main'
 
@@ -20,4 +21,6 @@ urlpatterns = [
     path('logout/', logout_user, name='logout'),
     path('seasons/add/', add_auction_season, name='add_season'),
     path('products/<uuid:id>/bid/', place_bid, name='place_bid'),
+    path('products/<uuid:id>/edit/', edit_product, name='edit_product'),
+    path('products/<uuid:id>/delete/', delete_product, name='delete_product'),
 ]

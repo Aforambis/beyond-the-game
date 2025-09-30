@@ -23,9 +23,9 @@ def show_main(request):
         product_list = Product.objects.filter(user=request.user)
 
     context = {
-        'npm': '240123456',
+        'npm': '2406421081',
         'name': request.user.username,
-        'class': 'PBP A',
+        'class': 'PBP F',
         'product_list': product_list,
         'last_login': request.COOKIES.get('last_login', 'Never')
     }
@@ -147,3 +147,33 @@ def place_bid(request, product_id):
             return redirect('main:product_detail', id=product.id)
 
     return render(request, 'place_bid.html', {'form': form, 'product': product})
+
+@login_required(login_url='/login')
+def delete_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+    
+    # Check if the user is the owner of the product
+    if product.user != request.user:
+        messages.error(request, "You are not authorized to delete this item.")
+        return redirect('main:show_products')
+        
+    product.delete()
+    return redirect('main:show_products')
+
+@login_required(login_url='/login')
+def edit_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+
+    # Check if the user is the owner of the product
+    if product.user != request.user:
+        messages.error(request, "You are not authorized to edit this item.")
+        return redirect('main:show_products')
+
+    form = ProductForm(request.POST or None, instance=product)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_products')
+
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
