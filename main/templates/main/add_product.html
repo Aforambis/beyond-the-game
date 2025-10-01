@@ -1,18 +1,105 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
+{% load static %}
 
 {% block meta %}
-<title>Add Product</title>
+  <title>Add New Item - Beyond The Game</title>
 {% endblock meta %}
 
 {% block content %}
-<div class="form-container">
-  <h1>Add Product</h1>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn">Save</button>
-  </form>
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-2xl">
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900" style="font-family: 'Cormorant Garamond', serif;">
+      Add New Item to the Collection
+    </h2>
+  </div>
 
-  <a href="{% url 'main:show_products' %}" class="back-link">Back to list</a>
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
+    <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <form class="space-y-6" action="{% url 'main:add_product' %}" method="POST">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="rounded-md bg-red-50 p-4">
+            <div class="flex">
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Error!</h3>
+                <div class="mt-2 text-sm text-red-700">
+                  <ul role="list" class="list-disc pl-5 space-y-1">
+                    {% for error in form.non_field_errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        <div>
+          <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700">Item Name</label>
+          {{ form.name }}
+          {% if form.name.errors %}<p class="mt-2 text-sm text-red-600">{{ form.name.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+          <label for="{{ form.auction_season.id_for_label }}" class="block text-sm font-medium text-gray-700">Auction Season</label>
+          {{ form.auction_season }}
+          {% if form.auction_season.errors %}<p class="mt-2 text-sm text-red-600">{{ form.auction_season.errors.0 }}</p>{% endif %}
+        </div>
+        
+        <div>
+          <label for="{{ form.price.id_for_label }}" class="block text-sm font-medium text-gray-700">Starting Price (IDR)</label>
+          {{ form.price }}
+          {% if form.price.errors %}<p class="mt-2 text-sm text-red-600">{{ form.price.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+          <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700">Category</label>
+          {{ form.category }}
+          {% if form.category.errors %}<p class="mt-2 text-sm text-red-600">{{ form.category.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+          <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700">Description</label>
+          {{ form.description }}
+          {% if form.description.errors %}<p class="mt-2 text-sm text-red-600">{{ form.description.errors.0 }}</p>{% endif %}
+        </div>
+        
+        <div>
+          <label for="{{ form.thumbnail.id_for_label }}" class="block text-sm font-medium text-gray-700">Thumbnail Image URL</label>
+          {{ form.thumbnail }}
+          {% if form.thumbnail.errors %}<p class="mt-2 text-sm text-red-600">{{ form.thumbnail.errors.0 }}</p>{% endif %}
+        </div>
+        
+        <hr/>
+        <p class="text-sm text-center text-gray-500">Optional Details</p>
+
+        <div class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
+            <div>
+              <label for="{{ form.club.id_for_label }}" class="block text-sm font-medium text-gray-700">Club</label>
+              {{ form.club }}
+            </div>
+
+            <div>
+              <label for="{{ form.player.id_for_label }}" class="block text-sm font-medium text-gray-700">Player</label>
+              {{ form.player }}
+            </div>
+            
+            <div class="sm:col-span-2">
+              <label for="{{ form.match_date.id_for_label }}" class="block text-sm font-medium text-gray-700">Match Date</label>
+              {{ form.match_date }}
+               <p class="mt-2 text-xs text-gray-500">Format: YYYY-MM-DD</p>
+            </div>
+        </div>
+
+
+        <div>
+          <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+            Submit Item
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-{% endblock content %}
+{% endblock %}

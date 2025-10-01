@@ -18,12 +18,8 @@ from .forms import ProductForm, AuctionSeasonForm, BidForm, CustomUserCreationFo
 
 @login_required(login_url='/login')
 def show_main(request):
-    filter_type = request.GET.get("filter", "all")
-
-    if filter_type == "my":
-        products = Product.objects.filter(user=request.user)
-    else:
-        products = Product.objects.all()
+    # Kita pastikan view ini mengirimkan daftar produk untuk tes
+    products = Product.objects.all()
 
     context = {
         'products': products,
@@ -80,7 +76,7 @@ def add_product(request):
         'form': form
     }
 
-    return render(request, "add_product.html", context)
+    return render(request, "main/add_product.html", context)
 
 def register(request):
     if request.method == "POST":

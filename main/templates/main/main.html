@@ -28,12 +28,7 @@
     <a href="{% url 'main:add_product' %}">+ Add Product</a>
   </nav>
 
-  <div id="product-container">
-    {% for product in products %}
-      {% include "main/partials/product_card.html" with product=product %}
-    {% empty %}
-      <p>No products found.</p>
-    {% endfor %}
-  </div>
+<div id="product-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    </div>
 </section>
 {% endblock content %}
