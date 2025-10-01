@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block meta %}
+  <title>Welcome - Beyond The Game</title>
+{% endblock meta %}
+
+{% block hero %}
+<section class="hero-section">
+  <div class="hero-background" style="background-image: url('{% static 'images/statement.jpg' %}');"></div>
+  <p>WHERE EVERY PIECE TELLS A STORY</p>
+  <h1>BEYOND THE GAME</h1>
+  <div class="hero-cta">
+    <a href="#collection-section">Explore The Collection</a>
+  </div>
+  <a href="#collection-section" class="scroll-down-arrow">
+    <i class="fa-solid fa-chevron-down"></i>
+  </a>
+</section>
+{% endblock hero %}
+
+{% block content %}
+<section id="collection-section" class="product-page-container">
+  <h1 class="page-title">The Collection</h1>
+  <nav class="product-filter-nav">
+    <a href="#" onclick="loadCollection('all'); return false;">All Products</a>
+    <a href="#" onclick="loadCollection('mine'); return false;">My Products</a>
+    <a href="{% url 'main:add_product' %}">+ Add Product</a>
+  </nav>
+
+  <div id="product-container">
+    {% for product in products %}
+      {% include "main/partials/product_card.html" with product=product %}
+    {% empty %}
+      <p>No products found.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock content %}

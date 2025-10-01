@@ -28,9 +28,8 @@ class Product(models.Model):
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    auction_season = models.ForeignKey(AuctionSeason, on_delete=models.CASCADE, related_name="products")
+    auction_season = models.ForeignKey('AuctionSeason', on_delete=models.CASCADE, related_name="products")
 
-    # Fields wajib sesuai ketentuan soal
     name = models.CharField(max_length=255)
     price = models.IntegerField()
     description = models.TextField()
@@ -40,7 +39,15 @@ class Product(models.Model):
 
     club = models.CharField(max_length=100, blank=True, null=True)  
     player = models.CharField(max_length=100, blank=True, null=True) 
-    match_date = models.DateField(blank=True, null=True)             
+    match_date = models.DateField(blank=True, null=True)
+
+    # --- KOLOM BARU ADA DI SINI ---
+    hero_image_url = models.URLField(max_length=255, blank=True, null=True, help_text="Link gambar HD untuk banner besar di halaman detail.")
+    story_details = models.TextField(blank=True, null=True, help_text="Cerita mendalam di balik item: statistik pertandingan, kutipan, dll.")
+    
+    winner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name="won_products")
+    is_sold = models.BooleanField(default=False)
+    # --- BATAS KOLOM BARU ---
     
     def __str__(self):
         club_info = f"{self.club}" if self.club else ""
@@ -54,6 +61,7 @@ class Product(models.Model):
     def current_price(self):
         highest = self.highest_bid
         return highest.amount if highest else self.price
+
 
 class Bid(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

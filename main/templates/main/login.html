@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <title>Login - Beyond The Game</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-box">
+        <h1 class="auth-title">Login</h1>
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            {# Menggunakan as_p agar setiap field dibungkus tag <p> yang mudah di-style #}
+            {{ form.as_p }}
+
+            <button class="auth-button" type="submit">Login</button>
+        </form>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <p class="message-item">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <p class="auth-redirect-text">
+            Don't have an account yet? <a href="{% url 'main:register' %}" class="auth-link">Register Now</a>
+        </p>
+    </div>
+</div>
+{% endblock content %}

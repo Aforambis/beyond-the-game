@@ -1,0 +1,5 @@
+{% for product in products %}
+  {% include "main/partials/product_card.html" with product=product %}
+{% empty %}
+  <p class="text-gray-500 col-span-full text-center">No products found for this filter.</p>
+{% endfor %}

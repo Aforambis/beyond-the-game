@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/output.css' %}"> 
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main_style.css' %}">
+  <script src="{% static 'js/main.js' %}"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% block meta %}<title>Beyond The Game</title>{% endblock meta %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Inter:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/main_style.css' %}">
+  <script src="{% static 'js/main.js' %}"></script>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="main-header">
+    <div class="header-left">
+      <a href="#" class="header-icon"><i class="fa-solid fa-bars"></i></a>
+      <a href="#" class="header-icon"><i class="fa-solid fa-magnifying-glass"></i></a>
+    </div>
+    <div class="header-center">
+      <a href="{% url 'main:show_main' %}" class="logo">BEYOND THE GAME</a>
+    </div>
+    <div class="header-right">
+      {% if user.is_authenticated %}
+        <a href="#" class="header-icon"><i class="fa-regular fa-user"></i></a>
+        <span class="welcome-text">Welcome, {{ user.username }}!</span>
+        <form action="{% url 'main:logout' %}" method="post" style="display: inline; margin: 0; padding: 0;">
+          {% csrf_token %}
+          <button type="submit" class="header-icon-button">
+            <i class="fa-solid fa-right-from-bracket" title="Logout"></i>
+          </button>
+        </form>
+      {% else %}
+        <a href="{% url 'main:login' %}" class="header-icon"><i class="fa-regular fa-user"></i></a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- HERO (FULL WIDTH) -->
+  {% block hero %}{% endblock hero %}
+
+<main>
+  <!-- Content normal masuk container -->
+  <div class="app-container">
+    {% block content %}{% endblock content %}
+  </div>
+</main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <p>&copy; 2025 Beyond The Game. All rights reserved.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="background: yellow; color: black; padding: 20px; font-size: 16px; border: 2px solid red; margin: 20px;">
+        <p><strong>--- DEBUG INFO ---</strong></p>
+        <p>Variable 'products' contains:</p>
+        <pre>{{ products }}</pre>
+    </div>
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+  
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">The Collection</h1>
+    <a href="{% url 'main:add_product' %}" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700">
+      + Add Product
+    </a>
+  </div>
+
+  <!-- Filter Button -->
+  <div class="flex space-x-4 mb-8">
+    <a href="{% url 'main:show_products' %}?filter=all" 
+       class="px-4 py-2 rounded-lg shadow text-sm font-medium {% if request.GET.filter != 'my' %}bg-green-100 text-green-700{% else %}bg-gray-100 text-gray-600{% endif %}">
+      All Products
+    </a>
+    <a href="{% url 'main:show_products' %}?filter=my" 
+       class="px-4 py-2 rounded-lg shadow text-sm font-medium {% if request.GET.filter == 'my' %}bg-green-100 text-green-700{% else %}bg-gray-100 text-gray-600{% endif %}">
+      My Products
+    </a>
+  </div>
+
+  <!-- Card Grid -->
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for product in products %}
+    <div class="bg-white border rounded-xl shadow hover:shadow-md overflow-hidden transition">
+      {% if product.thumbnail %}
+        <img src="{{ product.thumbnail }}" alt="{{ product.name }}" class="w-full h-48 object-cover">
+      {% else %}
+        <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">
+          No Image
+        </div>
+      {% endif %}
+
+      <div class="p-4">
+        <h2 class="font-semibold text-lg">{{ product.name }}</h2>
+        <p class="text-sm text-gray-500 mb-2">{{ product.description|truncatechars:70 }}</p>
+        <p class="font-bold text-gray-800">IDR {{ product.current_price|floatformat:0 }}</p>
+      </div>
+
+      <div class="flex justify-between items-center border-t px-4 py-3">
+        <a href="{% url 'main:product_detail' product.id %}" class="text-green-600 font-medium text-sm hover:underline">
+          Read More
+        </a>
+
+        {% if user == product.user %}
+        <div class="space-x-2">
+          <a href="{% url 'main:edit_product' product.id %}" class="text-yellow-600 text-sm font-medium hover:underline">Edit</a>
+          <a href="{% url 'main:delete_product' product.id %}" class="text-red-600 text-sm font-medium hover:underline">Delete</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+      <p class="text-gray-500">No products available yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

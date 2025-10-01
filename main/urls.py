@@ -1,13 +1,16 @@
-from django.urls import path
+from django.urls import path, include
+from django.contrib import admin
 from .views import show_main, show_json, show_xml, show_json_by_id, show_xml_by_id, show_products, product_detail, add_product
 from main.views import register, login_user
 from main.views import logout_user
 from .views import add_auction_season, place_bid
 from .views import delete_product, edit_product
+from . import views
 
 app_name = 'main'
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', show_main, name='show_main'),
     path('json/', show_json, name="show_json"),
     path('xml/', show_xml, name="show_xml"),
@@ -23,4 +26,6 @@ urlpatterns = [
     path('products/<uuid:id>/bid/', place_bid, name='place_bid'),
     path('products/<uuid:id>/edit/', edit_product, name='edit_product'),
     path('products/<uuid:id>/delete/', delete_product, name='delete_product'),
+    path("products/partial/all/", views.all_products, name="products_all_partial"),
+    path("products/partial/mine/", views.my_products, name="products_mine_partial"),
 ]

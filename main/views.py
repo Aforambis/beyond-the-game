@@ -14,22 +14,23 @@ import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from .forms import ProductForm, AuctionSeasonForm, BidForm, CustomUserCreationForm, CustomAuthenticationForm
+
 @login_required(login_url='/login')
 def show_main(request):
     filter_type = request.GET.get("filter", "all")
-    if filter_type == "all":
-        product_list = Product.objects.all()
+
+    if filter_type == "my":
+        products = Product.objects.filter(user=request.user)
     else:
-        product_list = Product.objects.filter(user=request.user)
+        products = Product.objects.all()
 
     context = {
-        'npm': '2406421081',
+        'products': products,
         'name': request.user.username,
-        'class': 'PBP F',
-        'product_list': product_list,
         'last_login': request.COOKIES.get('last_login', 'Never')
     }
-    return render(request, "main.html",context)
+    return render(request, "main/main.html", context)
 
 def show_json(request):
     data = Product.objects.all()
@@ -56,10 +57,7 @@ def show_products(request):
         products = Product.objects.all()
 
     context = {
-        'npm' : '2406421081',
         'name': request.user.username if request.user.is_authenticated else 'Guest',
-        'class': 'PBP F',
-        'product_list': products,   
         'products': products,       
         'last_login': request.COOKIES.get('last_login', 'Never')
     }
@@ -85,16 +83,18 @@ def add_product(request):
     return render(request, "add_product.html", context)
 
 def register(request):
-    form = UserCreationForm()
-
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Your account has been successfully created!')
-            return redirect('main:login')
-    context = {'form':form}
-    return render(request, 'register.html', context)
+            user = form.save()
+            login(request, user)  # auto login setelah daftar
+            messages.success(request, "Your account has been successfully created!")
+            return redirect("main:show_main")
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = CustomUserCreationForm()
+    return render(request, "register.html", {"form": form})
 
 def login_user(request):
    if request.method == 'POST':
@@ -103,19 +103,22 @@ def login_user(request):
       if form.is_valid():
         user = form.get_user()
         login(request, user)
-        response = HttpResponseRedirect(reverse("main:show_main"))
+        
+        response = HttpResponseRedirect(reverse("main:show_main")) 
+        
         response.set_cookie('last_login', str(datetime.datetime.now()))
         return response
 
    else:
       form = AuthenticationForm(request)
+      
    context = {'form': form}
    return render(request, 'login.html', context)
 
 def logout_user(request):
     logout(request)
-    response = HttpResponseRedirect(reverse('main:login'))
-    response.delete_cookie('last_login')
+    response = HttpResponseRedirect(reverse("main:login"))
+    response.delete_cookie("last_login")
     return response
 
 @login_required(login_url='/login')
@@ -177,3 +180,15 @@ def edit_product(request, id):
 
     context = {'form': form}
     return render(request, "edit_product.html", context)
+
+@login_required
+def all_products(request):
+    products = Product.objects.all()
+    # Render the new partial and use the key 'products'
+    return render(request, "main/partials/product_list.html", {"products": products})
+
+@login_required
+def my_products(request):
+    products = Product.objects.filter(user=request.user)
+    # Render the new partial and use the key 'products'
+    return render(request, "main/partials/product_list.html", {"products": products})
