@@ -28,4 +28,7 @@ urlpatterns = [
     path('products/<uuid:id>/delete/', delete_product, name='delete_product'),
     path("products/partial/all/", views.all_products, name="products_all_partial"),
     path("products/partial/mine/", views.my_products, name="products_mine_partial"),
+    path('profile/', views.profile, name='profile'),
+    path('journal/', views.journal, name='journal'),
+    path('my-bids/', views.my_bids, name='my_bids'),
 ]

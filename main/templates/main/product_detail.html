@@ -1,28 +1,38 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block body_class %}interior-page{% endblock body_class %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-8">
+<div class="detail-page-container">
+    <div class="detail-grid">
 
-  <!-- Hero -->
-  {% if product.hero_image_url %}
-    <img src="{{ product.hero_image_url }}" alt="{{ product.name }}" class="w-full h-80 object-cover rounded-xl shadow mb-6">
-  {% endif %}
+        <div class="detail-image-wrapper">
+            <img src="{{ product.thumbnail }}" alt="{{ product.name }}">
+        </div>
 
-  <!-- Info -->
-  <h1 class="text-3xl font-bold mb-2">{{ product.name }}</h1>
-  <p class="text-gray-600 mb-4">Category: {{ product.get_category_display }}</p>
-  <p class="text-xl font-bold text-green-700 mb-6">Current Price: IDR {{ product.current_price|floatformat:0 }}</p>
+        <div class="detail-info-wrapper">
+            <h1 class="detail-title">{{ product.name }}</h1>
+            
+            <p class="detail-season">Part of the <strong>{{ product.auction_season.name }}</strong></p>
+            
+            <div class="detail-price-box">
+                <span class="price-label">Current Price</span>
+                <span class="price-amount">IDR {{ product.current_price|intcomma }}</span>            
+            </div>
 
-  <!-- Story -->
-  {% if product.story_details %}
-    <div class="prose max-w-none mb-6">
-      {{ product.story_details|linebreaks }}
+            <p class="detail-description">{{ product.description }}</p>
+
+            <div class="detail-meta-grid">
+                <div><span>Category</span><p>{{ product.get_category_display }}</p></div>
+                <div><span>Club</span><p>{{ product.club|default:"N/A" }}</p></div>
+                <div><span>Player</span><p>{{ product.player|default:"N/A" }}</p></div>
+                <div><span>Match Date</span><p>{{ product.match_date|date:"d M Y"|default:"N/A" }}</p></div>
+            </div>
+
+            <a href="{% url 'main:place_bid' product.id %}" class="place-bid-button">Place a Bid</a>
+        </div>
     </div>
-  {% endif %}
-
-  <!-- Bidding -->
-  <a href="{% url 'main:place_bid' product.id %}" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700">
-    Place a Bid
-  </a>
 </div>
-{% endblock %}
+{% endblock content %}

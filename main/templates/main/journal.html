@@ -1,0 +1,42 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block body_class %}interior-page{% endblock body_class %}
+
+{% block content %}
+<div class="journal-page-wrapper">
+    <h1 class="journal-main-title">Our Manifesto</h1>
+
+    <section class="journal-section layout-image-left">
+        <div class="section-image" style="background-image: url('{% static "images/journal1.jpg" %}')"></div>
+        <div class="section-text">
+            <p>Football is not merely a sport; it is a modern mythology. Its moments of genius and heartbreak are etched into our collective memory, passed down not as statistics, but as stories. Yet, in an era of digital noise, the tangible artifacts of these stories—the mud-on-canvas of a jersey, the battle-scarred leather of a boot—are often lost, their true significance fading.</p>
+        </div>
+    </section>
+
+    <section class="journal-section layout-image-right">
+        <div class="section-image" style="background-image: url('{% static "images/journal2.jpg" %}')"></div>
+        <div class="section-text">
+            <p>Beyond The Game was born from this realization. Founded from a series of late-night conversations in a quiet Zürich archive, our mission became clear: to build a sanctuary for these artifacts, guided by three core principles: authenticity above all, the discipline of seasonal auctions, and a community-driven respect for the game.</p>
+        </div>
+    </section>
+
+    <section class="journal-section-full">
+        <div class="section-image" style="background-image: url('{% static "images/journal3.jpg" %}')"></div>
+<div class="section-text-full">
+    <p>
+        We are not brokers; we are archivists, the custodians of history.
+        <br>
+        Beyond The Game is a gallery. A vault where the legends of the
+        <br>
+        beautiful game are not just remembered, but tangibly felt. We invite you
+        <br>
+        to explore, not as a consumer, but as a fellow
+        <br>
+        guardian of the game's soul.
+    </p>
+</div>
+    </section>
+
+</div>
+{% endblock content %}

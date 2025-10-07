@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block body_class %}interior-page{% endblock body_class %}
+
+{% block content %}
+<div class="form-page-container">
+    <div class="form-wrapper" style="max-width: 500px;"> <h1 class="form-title">Create New Auction Season</h1>
+        
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-grid" style="grid-template-columns: 1fr;"> <div class="form-group">{{ form.name.label_tag }} {{ form.name }}</div>
+                <div class="form-group">{{ form.start_date.label_tag }} {{ form.start_date }}</div>
+                <div class="form-group">{{ form.end_date.label_tag }} {{ form.end_date }}</div>
+
+            </div>
+
+            <button type="submit" class="submit-button">Create Season</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

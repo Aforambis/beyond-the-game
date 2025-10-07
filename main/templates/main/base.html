@@ -3,61 +3,95 @@
 <html lang="en">
 
 <head>
-  <link rel="stylesheet" type="text/css" href="{% static 'css/output.css' %}"> 
+  <script src="https://cdn.tailwindcss.com"></script>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" type="text/css" href="{% static 'css/main_style.css' %}">
-  <script src="{% static 'js/main.js' %}" defer></script> 
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   {% block meta %}<title>Beyond The Game</title>{% endblock meta %}
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Inter:wght@400;500&display=swap"
-    rel="stylesheet">
-</head>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Inter:wght@400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
-<body>
-  <!-- HEADER -->
-  <header class="main-header">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_style.css' %}">
+    <style>
+        @media (max-width: 768px) {
+            .hero-section {
+                background-image: url("{% static 'images/fallback-image.jpg' %}");
+            }
+        }
+    </style>
+  </head>
+
+<body class="{% block body_class %}{% endblock body_class %}">
+<header class="main-header">
+    
     <div class="header-left">
-      <a href="#" class="header-icon"><i class="fa-solid fa-bars"></i></a>
-      <a href="#" class="header-icon"><i class="fa-solid fa-magnifying-glass"></i></a>
+        <a href="#" class="header-icon" id="navbar-toggle"><i class="fa-solid fa-bars"></i></a>
+        <div class="desktop-nav">
+            <a href="{% url 'main:show_main' %}#collection-section" class="nav-link">Auctions</a>
+            <a href="#" class="nav-link disabled">Categories</a>
+            <a href="{% url 'main:journal' %}" class="nav-link">The Journal</a>
+        </div>
     </div>
-    <div class="header-center">
-      <a href="{% url 'main:show_main' %}" class="logo">BEYOND THE GAME</a>
-    </div>
-    <div class="header-right">
-      {% if user.is_authenticated %}
-        <a href="#" class="header-icon"><i class="fa-regular fa-user"></i></a>
-        <span class="welcome-text">Welcome, {{ user.username }}!</span>
-        <form action="{% url 'main:logout' %}" method="post" style="display: inline; margin: 0; padding: 0;">
-          {% csrf_token %}
-          <button type="submit" class="header-icon-button">
-            <i class="fa-solid fa-right-from-bracket" title="Logout"></i>
-          </button>
-        </form>
-      {% else %}
-        <a href="{% url 'main:login' %}" class="header-icon"><i class="fa-regular fa-user"></i></a>
-      {% endif %}
-    </div>
-  </header>
 
-  <!-- HERO (FULL WIDTH) -->
+    <div class="header-center">
+        <a href="{% url 'main:show_main' %}" class="logo-container">
+            <span class="logo-main">BEYOND THE GAME</span>
+            <span class="logo-sub">ZÜRICH, SWITZERLAND</span>
+        </a>
+    </div>
+
+    <div class="header-right">
+        <div class="desktop-nav">
+            {% if user.is_authenticated %}
+                <a href="/profile/" class="nav-link">Account</a>
+                <form action="{% url 'main:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link-button">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'main:login' %}" class="nav-link">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+</header>
+
+<nav class="navbar-dropdown" id="navbar-links">
+    <a href="{% url 'main:show_main' %}#collection-section" class="dropdown-link">Auctions</a>
+    <a href="#" class="dropdown-link disabled">Categories</a>
+    <a href="#" class="dropdown-link disabled">The Journal</a>
+    
+    <a href="{% url 'main:add_product' %}" class="dropdown-link">Add Product</a>
+    <hr class="dropdown-divider">
+    {% if user.is_authenticated %}
+        <a href="/profile/" class="dropdown-link">{{ user.username }}'s Profile</a>
+        <form action="{% url 'main:logout' %}" method="post" class="dropdown-link">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    {% else %}
+        <a href="{% url 'main:login' %}" class="dropdown-link">Login</a>
+    {% endif %}
+</nav>
+
   {% block hero %}{% endblock hero %}
 
 <main>
-  <!-- Content normal masuk container -->
-  <div class="app-container">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10"> 
     {% block content %}{% endblock content %}
   </div>
 </main>
 
-  <!-- FOOTER -->
   <footer class="site-footer">
     <p>&copy; 2025 Beyond The Game. All rights reserved.</p>
   </footer>
+
+  <script src="{% static 'js/main.js' %}"></script> 
+
 </body>
 </html>

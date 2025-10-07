@@ -1,0 +1,18 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+  <h1 class="text-2xl font-semibold mb-4">My Bids</h1>
+  {% if bids %}
+    <ul class="space-y-4">
+      {% for bid in bids %}
+        <li class="border p-4 rounded-md">
+          <p><strong>{{ bid.product.name }}</strong></p>
+          <p>Amount: IDR {{ bid.amount|floatformat:0 }}</p>
+          <p>Date: {{ bid.created_at|date:"d M Y, H:i" }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You haven’t placed any bids yet.</p>
+  {% endif %}
+{% endblock %}

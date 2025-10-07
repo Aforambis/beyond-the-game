@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
 {% load static %}
 
 {% block meta %}
@@ -10,14 +10,26 @@
     <div class="auth-box">
         <h1 class="auth-title">Login</h1>
 
-        <form method="POST" action="">
-            {% csrf_token %}
-            
-            {# Menggunakan as_p agar setiap field dibungkus tag <p> yang mudah di-style #}
-            {{ form.as_p }}
+<form method="POST" action="">
+    {% csrf_token %}
 
-            <button class="auth-button" type="submit">Login</button>
-        </form>
+    {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+            <p class="error-message">{{ error }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <div class="form-group">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+    </div>
+
+    <div class="form-group">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+    </div>
+    <button class="auth-button" type="submit">Login</button>
+</form>
 
         {% if messages %}
             <div class="messages">

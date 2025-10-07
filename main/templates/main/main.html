@@ -7,28 +7,41 @@
 
 {% block hero %}
 <section class="hero-section">
-  <div class="hero-background" style="background-image: url('{% static 'images/statement.jpg' %}');"></div>
-  <p>WHERE EVERY PIECE TELLS A STORY</p>
-  <h1>BEYOND THE GAME</h1>
-  <div class="hero-cta">
-    <a href="#collection-section">Explore The Collection</a>
-  </div>
-  <a href="#collection-section" class="scroll-down-arrow">
-    <i class="fa-solid fa-chevron-down"></i>
-  </a>
+    
+    <div class="video-background">
+        <video autoplay muted loop playsinline id="hero-video">
+            <source src="{% static 'videos/hero-video.webm' %}" type="video/webm">
+            <source src="{% static 'videos/hero-video.mp4' %}" type="video/mp4">
+        </video>
+    </div>
+
+<div class="hero-content">
+    <h1 class="main-title">
+        Where Every Piece Tells a Story
+    </h1>
+    <a href="#collection-section" class="explore-link">
+        Explore Our Pieces
+    </a>
+</div>
+
+    <a href="#collection-section" class="scroll-down-arrow" style="position: absolute; bottom: 30px; z-index: 3; font-size: 1.5rem; color: white;">
+        <i class="fa-solid fa-chevron-down"></i>
+    </a>
+
 </section>
 {% endblock hero %}
 
 {% block content %}
-<section id="collection-section" class="product-page-container">
+<section id="collection-section" class="product-page-container scroll-target">
   <h1 class="page-title">The Collection</h1>
+  
   <nav class="product-filter-nav">
-    <a href="#" onclick="loadCollection('all'); return false;">All Products</a>
-    <a href="#" onclick="loadCollection('mine'); return false;">My Products</a>
+    <a href="#" data-filter="all">All Products</a>
+    <a href="#" data-filter="mine">My Products</a>
     <a href="{% url 'main:add_product' %}">+ Add Product</a>
   </nav>
 
-<div id="product-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    </div>
+  <div id="product-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8"></div>
+
 </section>
 {% endblock content %}

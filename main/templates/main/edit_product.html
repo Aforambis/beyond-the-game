@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'main/base.html' %}
 
 {% block meta %}
 <title>Edit Product</title>
@@ -12,5 +12,5 @@
   <button type="submit" class="btn">Save Changes</button>
 </form>
 
-<a href="{% url 'main:show_products' %}">Back to list</a>
+<a href="{% url 'main:main' %}">Back to list</a>
 {% endblock content %}
