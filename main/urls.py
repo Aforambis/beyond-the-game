@@ -31,4 +31,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('journal/', views.journal, name='journal'),
     path('my-bids/', views.my_bids, name='my_bids'),
+    path("products/partial/", views.product_list_partial, name="product_list_partial"),
+    path("api/products/add/", views.api_add_product, name="api_add_product"),
+    path("api/products/<uuid:pk>/delete/", views.api_delete_product, name="api_delete_product"),
 ]

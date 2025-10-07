@@ -1,0 +1,39 @@
+<form id="product-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-grid">
+        <!-- (isi form kamu tetap sama) -->
+        {{ form.as_p }}
+    </div>
+    <button type="submit" class="submit-button">Submit Item</button>
+</form>
+
+<script>
+document.getElementById("product-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    
+    const response = await fetch("{% url 'main:api_add_product' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-CSRFToken": form.querySelector('[name=csrfmiddlewaretoken]').value,
+        },
+    });
+
+    const data = await response.json();
+    if (data.status === "success") {
+        showToast(data.message, "success");
+        // reload product list
+        fetch("{% url 'main:product_list_partial' %}")
+            .then(r => r.text())
+            .then(html => {
+                document.querySelector("#product-container").innerHTML = html;
+            });
+        // close modal
+        document.getElementById("form-modal").classList.add("hidden");
+    } else {
+        showToast("Error: " + (data.message || "Check form fields"), "error");
+    }
+});
+</script>

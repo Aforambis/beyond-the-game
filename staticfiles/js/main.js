@@ -1,128 +1,18 @@
-// --- Fungsi Utama untuk Setup Halaman ---
-document.addEventListener('DOMContentLoaded', () => {
+// ===================================================
+// GLOBAL HELPER FUNCTIONS
+// ===================================================
 
-    // ===================================================
-    // BAGIAN 1: SETUP UNTUK INTERAKSI HEADER & NAVIGASI
-    // ===================================================
-
-    // --- Logika untuk Hamburger Menu (Dropdown di Kiri) ---
-    const navbarToggle = document.getElementById('navbar-toggle');
-    const navbarLinks = document.getElementById('navbar-links');
-
-    if (navbarToggle && navbarLinks) {
-        navbarToggle.addEventListener('click', function(event) {
-            event.preventDefault();
-            navbarLinks.classList.toggle('active');
-        });
-    }
-
-    // --- Logika untuk User Icon Dropdown (di Kanan) ---
-    const userIconTrigger = document.querySelector('.user-icon');
-    const userDropdown = document.getElementById('user-dropdown');
-
-    if (userIconTrigger && userDropdown) {
-        userIconTrigger.addEventListener('click', function(event) {
-            event.preventDefault();
-            userDropdown.classList.toggle('active');
-        });
-    }
-
-    // Menutup kedua dropdown jika user mengklik di luar area header
-    document.addEventListener('click', function(event) {
-        const header = document.querySelector('.main-header');
-        if (header && !header.contains(event.target)) {
-            if (navbarLinks) navbarLinks.classList.remove('active');
-            if (userDropdown) userDropdown.classList.remove('active');
-        }
-    });
-
-
-    // ===================================================
-    // BAGIAN 2: EFEK VISUAL
-    // ===================================================
-
-    // --- Efek Header menjadi Solid saat di-scroll ---
-    const mainHeader = document.querySelector('.main-header');
-    if (mainHeader) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                mainHeader.classList.add('scrolled');
-            } else {
-                mainHeader.classList.remove('scrolled');
-            }
-        });
-    }
-
-    // --- Efek Smooth Scrolling untuk link anchor (#) ---
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetElement = document.querySelector(this.getAttribute('href'));
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-
-    // ===================================================
-    // BAGIAN 3: LOGIKA FILTER PRODUK
-    // ===================================================
-    const productNav = document.querySelector('.product-filter-nav');
-    if (productNav) {
-        const filterButtons = productNav.querySelectorAll('a[data-filter]');
-        filterButtons.forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.preventDefault();
-                const filterType = this.getAttribute('data-filter');
-                loadCollection(filterType, this);
-            });
-        });
-
-        const allProductsButton = productNav.querySelector('a[data-filter="all"]');
-        if (allProductsButton) {
-            loadCollection('all', allProductsButton);
-        }
-    }
-
-    // ===================================================
-    // BAGIAN 4: LOGIKA UNTUK FORM DINAMIS (KODE BARU)
-    // ===================================================
-    const categorySelect = document.getElementById('id_category');
-    const clubLabel = document.querySelector('label[for="id_club"]');
-    const playerLabel = document.querySelector('label[for="id_player"]');
-
-    const checkCategory = () => {
-        if (!categorySelect || !clubLabel || !playerLabel) return;
-
-        const selectedCategory = categorySelect.value;
-        if (selectedCategory === 'jersey' || selectedCategory === 'shoes') {
-            clubLabel.classList.add('is-required');
-            playerLabel.classList.add('is-required');
-        } else {
-            clubLabel.classList.remove('is-required');
-            playerLabel.classList.remove('is-required');
-        }
-    };
-
-    if (categorySelect) {
-        categorySelect.addEventListener('change', checkCategory);
-        checkCategory();
-    }
-});
-
-
-// --- FUNGSI UNTUK LOAD KOLEKSI PRODUK (KODE ASLI KAMU, TIDAK DIUBAH) ---
+/**
+ * Fetches and displays a collection of products based on the type.
+ * @param {string} type - The type of collection to load ('all' or 'mine').
+ * @param {HTMLElement} element - The navigation element that was clicked.
+ */
 function loadCollection(type, element) {
     const productContainer = document.getElementById('product-container');
-    if (!productContainer) { return; }
+    if (!productContainer) return;
 
-    const filterButtons = document.querySelectorAll('.product-filter-nav a[data-filter]');
-    if (filterButtons) {
-        filterButtons.forEach(btn => btn.classList.remove('active-filter'));
-    }
+    // Set the active filter style
+    document.querySelectorAll('.product-filter-nav a[data-filter]').forEach(btn => btn.classList.remove('active-filter'));
     if (element) {
         element.classList.add('active-filter');
     }
@@ -140,11 +30,143 @@ function loadCollection(type, element) {
         .then(response => response.text())
         .then(html => {
             productContainer.innerHTML = html;
-            if (html.includes("You haven't added any products")) {
-                productContainer.classList.add('is-empty');
-            } else {
-                productContainer.classList.remove('is-empty');
-            }
         })
-        .catch(error => console.error('Error fetching the collection:', error));
+        .catch(error => {
+            console.error('Error fetching the collection:', error);
+            productContainer.innerHTML = '<p>Error loading products. Please try again.</p>';
+        });
 }
+
+/**
+ * Gets a cookie value by name.
+ * @param {string} name - The name of the cookie.
+ * @returns {string|null} The cookie value or null if not found.
+ */
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+/**
+ * Handles the submission of the "Add Product" form via AJAX.
+ * @param {Event} event - The form submission event.
+ */
+function handleAddFormSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': csrftoken },
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            document.getElementById('form-modal').classList.add('hidden');
+            loadCollection('all', document.querySelector('a[data-filter="all"]'));
+            alert(data.message); // You can replace this with a toast notification
+        } else {
+            // Re-render the form with validation errors
+            document.getElementById('modal-body').innerHTML = data.form_html;
+            document.getElementById('product-form').addEventListener('submit', handleAddFormSubmit);
+        }
+    });
+}
+
+// ===================================================
+// MAIN SCRIPT EXECUTION (waits for page to load)
+// ===================================================
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- Header & Navigation Logic ---
+    const navbarToggle = document.getElementById('navbar-toggle');
+    const navbarLinks = document.getElementById('navbar-links');
+    if (navbarToggle && navbarLinks) {
+        navbarToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            navbarLinks.classList.toggle('active');
+        });
+    }
+
+    // --- Modal Management ---
+    const modal = document.getElementById('form-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    if (modal && closeModalBtn) {
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            document.getElementById('modal-body').innerHTML = ''; // Clear modal
+        });
+    }
+
+    // --- Add Product Button ---
+    const addProductBtn = document.getElementById('add-product-btn');
+    if (addProductBtn) {
+        addProductBtn.addEventListener('click', () => {
+            const addUrl = addProductBtn.dataset.addUrl;
+            fetch(addUrl)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('modal-title').textContent = 'Add New Product';
+                    document.getElementById('modal-body').innerHTML = html;
+                    modal.classList.remove('hidden');
+                    document.getElementById('product-form').addEventListener('submit', handleAddFormSubmit);
+                });
+        });
+    }
+
+    // --- Product Filtering and Deletion (Event Delegation) ---
+    const productContainer = document.getElementById('product-container');
+    const productNav = document.querySelector('.product-filter-nav');
+
+    if (productNav) {
+        productNav.addEventListener('click', (event) => {
+            if (event.target.matches('a[data-filter]')) {
+                event.preventDefault();
+                const filterType = event.target.getAttribute('data-filter');
+                loadCollection(filterType, event.target);
+            }
+        });
+    }
+
+    if (productContainer) {
+        productContainer.addEventListener('click', (event) => {
+            if (event.target.classList.contains('delete-btn')) {
+                const deleteUrl = event.target.dataset.deleteUrl;
+                if (confirm("Are you sure you want to delete this product?")) {
+                    fetch(deleteUrl, {
+                        method: 'POST',
+                        headers: { 'X-CSRFToken': csrftoken },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            loadCollection('all', document.querySelector('a[data-filter="all"]'));
+                            alert(data.message); // Replace with a toast notification
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    // --- Initial Load ---
+    const allProductsButton = document.querySelector('a[data-filter="all"]');
+    if (allProductsButton) {
+        loadCollection('all', allProductsButton);
+    }
+});

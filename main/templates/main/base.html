@@ -26,6 +26,19 @@
     </style>
   </head>
 
+<div id="toast-container" class="fixed top-5 right-5 space-y-2 z-50"></div>
+<script>
+function showToast(message, type="info") {
+    const container = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = `p-3 rounded-lg shadow-lg text-white ${type === "success" ? "bg-green-500" : type === "error" ? "bg-red-500" : "bg-gray-800"}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+</script>
+
+
 <body class="{% block body_class %}{% endblock body_class %}">
 <header class="main-header">
     
@@ -91,7 +104,7 @@
     <p>&copy; 2025 Beyond The Game. All rights reserved.</p>
   </footer>
 
-  <script src="{% static 'js/main.js' %}"></script> 
+<script src="{% static 'js/main.js' %}?v=1"></script>
 
 </body>
 </html>

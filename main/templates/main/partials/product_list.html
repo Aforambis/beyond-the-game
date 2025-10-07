@@ -20,11 +20,17 @@
          class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-medium rounded-full hover:bg-black hover:text-white transition-all">
         Edit
       </a>
-      <form action="{% url 'main:delete_product' product.id %}" method="POST">
+      <form hx-post="{% url 'main:delete_product' product.id %}"
+            hx-target="#product-container"
+            hx-swap="innerHTML"
+            method="POST">
         {% csrf_token %}
-        <button type="submit"
-                class="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-full hover:bg-red-600 transition-all">
-          Delete
+        <button 
+        type="button"
+        class="delete-btn px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-full hover:bg-red-600 transition-all"
+        data-id="{{ product.id }}"
+        >
+        Delete
         </button>
       </form>
     </div>
@@ -43,6 +49,4 @@
     </p>
   </div>
 </div>
-
-
 {% endfor %}

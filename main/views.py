@@ -15,6 +15,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.forms import PasswordChangeForm
 
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
+
 from .forms import ProductForm, AuctionSeasonForm, BidForm, CustomUserCreationForm, UsernameChangeForm
 
 @login_required(login_url='/login')
@@ -64,20 +68,25 @@ def product_detail(request, id):
     product = get_object_or_404(Product, pk=id)
     return render(request, "main/product_detail.html", {"product": product})
 
-def add_product(request):
-    form = ProductForm(request.POST or None)
+# @login_required(login_url='/login')
+# def add_product(request):
+#     if request.method == 'POST':
+#         form = ProductForm(request.POST or None)
+#         if form.is_valid():
+#             product = form.save(commit=False)
+#             product.user = request.user
+#             product.save()
+#             return JsonResponse({'status': 'success', 'message': 'Product added successfully!'})
+#         else:
+#             # If form is invalid, re-render the form with errors and send it back
+#             form_html = render_to_string('main/partials/product_form.html', {'form': form}, request=request)
+#             return JsonResponse({'status': 'error', 'form_html': form_html})
 
-    if form.is_valid() and request.method == 'POST':
-        product_entry = form.save(commit = False)
-        product_entry.user = request.user
-        product_entry.save()
-        return redirect('main:show_main')
+    # For GET request, just return the form
+    form = ProductForm()
+    # You might want to create a new partial template just for the form
+    return render(request, "main/partials/product_form.html", {'form': form})
 
-    context = {
-        'form': form
-    }
-
-    return render(request, "main/add_product.html", context)
 
 def register(request):
     if request.method == "POST":
@@ -152,17 +161,19 @@ def place_bid(request, product_id):
 
     return render(request, 'main/place_bid.html', {'form': form, 'product': product})
 
-@login_required(login_url='/login')
-def delete_product(request, id):
-    product = get_object_or_404(Product, pk=id)
-    
-    # Check if the user is the owner of the product
-    if product.user != request.user:
-        messages.error(request, "You are not authorized to delete this item.")
-        return redirect('main:show_main')
+# @login_required(login_url='/login')
+# def delete_product(request, id):
+#     product = get_object_or_404(Product, pk=id)
+#     if product.user != request.user:
+#         return JsonResponse({'status': 'error', 'message': 'You are not authorized to delete this item.'}, status=403)
         
-    product.delete()
-    return redirect('main:show_main')
+#     if request.method == 'POST':
+#         product.delete()
+#         return JsonResponse({'status': 'success', 'message': 'Product deleted successfully!'})
+
+#     # In case of a GET request, which shouldn't happen with AJAX delete
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
 
 @login_required(login_url='/login')
 def edit_product(request, id):
@@ -234,3 +245,61 @@ def journal(request):
 def my_bids(request):
     bids = request.user.bids.select_related('product').order_by('-created_at')
     return render(request, "main/my_bids.html", {"bids": bids})
+
+def product_list_partial(request):
+    products = Product.objects.all().order_by('-id')
+    return render(request, "main/partials/product_list.html", {"products": products})
+
+def add_product(request):
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            products = Product.objects.all().order_by('-created_at')
+            return render(request, "main/partials/product_list.html", {"products": products})
+    else:
+        form = ProductForm()
+    return render(request, "main/partials/product_form.html", {"form": form})
+
+@require_POST
+def delete_product(request, pk):
+    Product.objects.filter(pk=pk).delete()
+    products = Product.objects.all().order_by('-created_at')
+    return render(request, "main/partials/product_list.html", {"products": products})
+
+from django.views.decorators.csrf import csrf_exempt
+
+@login_required
+@csrf_exempt
+def api_add_product(request):
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.user = request.user
+            product.save()
+            return JsonResponse({
+                "status": "success",
+                "message": "Product added successfully!",
+                "product": {
+                    "id": str(product.id),
+                    "name": product.name,
+                    "thumbnail": product.thumbnail.url if product.thumbnail else "",
+                    "start_price": product.start_price,
+                    "auction_season": product.auction_season.name if product.auction_season else "",
+                }
+            })
+        return JsonResponse({"status": "error", "errors": form.errors}, status=400)
+    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)
+
+
+@login_required
+@csrf_exempt
+def api_delete_product(request, pk):
+    if request.method == "DELETE":
+        product = get_object_or_404(Product, pk=pk)
+        if product.user != request.user:
+            return JsonResponse({"status": "error", "message": "Not authorized."}, status=403)
+        product.delete()
+        return JsonResponse({"status": "success", "message": "Product deleted!"})
+    return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)
