@@ -6,6 +6,7 @@ from main.views import logout_user
 from .views import add_auction_season, place_bid
 from .views import delete_product, edit_product
 from . import views
+from .views import get_edit_product_form
 
 app_name = 'main'
 
@@ -34,4 +35,7 @@ urlpatterns = [
     path("products/partial/", views.product_list_partial, name="product_list_partial"),
     path("api/products/add/", views.api_add_product, name="api_add_product"),
     path("api/products/<uuid:pk>/delete/", views.api_delete_product, name="api_delete_product"),
+    path("api/login/", views.api_login, name="api_login"),
+    path("api/register/", views.api_register, name="api_register"),
+    path('get-edit-form/<uuid:pk>/', get_edit_product_form, name='get_edit_form'),
 ]

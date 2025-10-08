@@ -113,6 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function showLoading(targetId) {
+  const el = document.getElementById(targetId);
+  if (el) el.innerHTML = "<p class='text-center text-gray-500'>Loading...</p>";
+}
 
 // --- FUNGSI UNTUK LOAD KOLEKSI PRODUK (KODE ASLI KAMU, TIDAK DIUBAH) ---
 function loadCollection(type, element) {
@@ -136,6 +140,7 @@ function loadCollection(type, element) {
         return;
     }
 
+    showLoading("product-container")
     fetch(url)
         .then(response => response.text())
         .then(html => {
@@ -147,4 +152,97 @@ function loadCollection(type, element) {
             }
         })
         .catch(error => console.error('Error fetching the collection:', error));
+}
+
+function toggleModal(id) {
+  document.getElementById(id).classList.toggle("hidden");
+}
+
+document.getElementById("loginBtn")?.addEventListener("click", async () => {
+  const username = document.getElementById("login-username").value;
+  const password = document.getElementById("login-password").value;
+
+  const res = await fetch("/api/login/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCSRFToken(),
+    },
+    body: JSON.stringify({ username, password }),
+  });
+
+  const data = await res.json();
+  showToast(data.message, data.success ? "success" : "error");
+  if (data.success) location.reload();
+});
+
+document.getElementById("registerBtn")?.addEventListener("click", async () => {
+  const username = document.getElementById("reg-username").value;
+  const password = document.getElementById("reg-password").value;
+  const password2 = document.getElementById("reg-password2").value;
+
+  const res = await fetch("/api/register/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCSRFToken(),
+    },
+    body: JSON.stringify({ username, password, password2 }),
+  });
+
+  const data = await res.json();
+  showToast(data.message, data.success ? "success" : "error");
+  if (data.success) toggleModal("registerModal");
+});
+
+document.getElementById("refresh-products")?.addEventListener("click", (e) => {
+  const url = e.target.dataset.refreshUrl;
+  const container = document.getElementById("product-container");
+  container.innerHTML = "<p class='text-gray-500 text-center'>Refreshing...</p>";
+  htmx.ajax('GET', url, { target: "#product-container" });
+});
+
+function openEditModal(id) {
+    // Get the modal elements you already have in main.html
+    const modal = document.getElementById("form-modal");
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+
+    // The new URL we just created
+    const url = `/get-edit-form/${id}/`;
+
+    // Set the title and show the modal
+    modalTitle.textContent = "Edit Product";
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    
+    // Use HTMX to fetch the form and inject it into the modal's body
+    htmx.ajax('GET', url, { target: modalBody });
+}
+
+async function submitEdit(id) {
+    const name = document.getElementById("edit-name").value;
+    const price = document.getElementById("edit-price").value;
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value; // Make sure to get CSRF token
+
+    // The edit URL from your urls.py is /products/<id>/edit/
+    const res = await fetch(`/products/${id}/edit/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({ name, price }),
+    });
+
+    const data = await res.json();
+    showToast(data.message, data.status === "success" ? "success" : "error");
+    document.getElementById("editModal").remove();
+
+    // Refresh the product list
+    const refreshBtn = document.getElementById("refresh-products");
+    const url = refreshBtn?.dataset.refreshUrl;
+    if (url) {
+        htmx.ajax('GET', url, { target: "#product-container" });
+    }
 }

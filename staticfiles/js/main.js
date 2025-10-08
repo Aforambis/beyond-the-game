@@ -170,3 +170,5 @@ document.addEventListener('DOMContentLoaded', () => {
         loadCollection('all', allProductsButton);
     }
 });
+
+window.openEditModal = openEditModal;

@@ -2082,3 +2082,6 @@ a.cta-gold {
 .place-bid-button:hover {
     background-color: #333;
 }
+
+#form-modal { z-index: 50; }
+#form-modal .modal-content { z-index: 60; position: relative; }

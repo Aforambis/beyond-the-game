@@ -174,24 +174,34 @@ def place_bid(request, product_id):
 #     # In case of a GET request, which shouldn't happen with AJAX delete
 #     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
 
-
 @login_required(login_url='/login')
 def edit_product(request, id):
+    # Dapatkan instance produk yang mau di-edit
     product = get_object_or_404(Product, pk=id)
-
-    # Check if the user is the owner of the product
+    
+    # Cek otorisasi, pastikan hanya pemilik yang bisa mengedit
     if product.user != request.user:
-        messages.error(request, "You are not authorized to edit this item.")
-        return redirect('main:show_main')
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden("You are not authorized to edit this product.")
 
-    form = ProductForm(request.POST or None, instance=product)
-
-    if form.is_valid() and request.method == "POST":
-        form.save()
-        return redirect('main:show_main')
-
-    context = {'form': form}
-    return render(request, "main/add_product.html", context)
+    if request.method == 'POST':
+        # Proses data form yang dikirim, sama seperti add_product
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            # Jika sukses, render ulang daftar produk untuk HTMX
+            # Ini akan otomatis menutup modal dan me-refresh halaman
+            products = Product.objects.all().order_by('-created_at')
+            return render(request, "main/partials/product_list.html", {"products": products})
+        else:
+            # Jika form tidak valid, kirim kembali form dengan pesan error
+            # Ini akan menampilkan error di dalam modal tanpa menutupnya
+            context = {'form': form, 'product': product}
+            return render(request, 'main/edit_product_form.html', context)
+    
+    # Method selain POST tidak diizinkan
+    from django.http import HttpResponse
+    return HttpResponse("Invalid request method.", status=405)
 
 @login_required
 def all_products(request):
@@ -303,3 +313,48 @@ def api_delete_product(request, pk):
         product.delete()
         return JsonResponse({"status": "success", "message": "Product deleted!"})
     return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)
+
+@require_POST
+@csrf_exempt
+def api_login(request):
+    import json
+    data = json.loads(request.body)
+    username = data.get("username")
+    password = data.get("password")
+
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        login(request, user)
+        return JsonResponse({"success": True, "message": "Login successful!"})
+    else:
+        return JsonResponse({"success": False, "message": "Invalid credentials"}, status=400)
+
+@require_POST
+@csrf_exempt
+def api_register(request):
+    import json
+    data = json.loads(request.body)
+    username = data.get("username")
+    password = data.get("password")
+    password2 = data.get("password2")
+
+    if password != password2:
+        return JsonResponse({"success": False, "message": "Passwords do not match"}, status=400)
+
+    if User.objects.filter(username=username).exists():
+        return JsonResponse({"success": False, "message": "Username already taken"}, status=400)
+
+    user = User.objects.create_user(username=username, password=password)
+    return JsonResponse({"success": True, "message": "Account created successfully!"})
+
+@login_required
+def get_edit_product_form(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    
+    # Security Check: Ensure the user owns the product
+    if product.user != request.user:
+        return HttpResponseForbidden("You are not allowed to edit this product.")
+        
+    form = ProductForm(instance=product)
+    context = {'form': form, 'product': product}
+    return render(request, 'main/edit_product_form.html', context)

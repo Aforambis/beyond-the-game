@@ -8,29 +8,37 @@
     <img 
       src="{{ product.thumbnail }}" 
       alt="{{ product.name }}" 
-      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-    
-    <!-- Hover overlay for buttons -->
-    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center gap-3">
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 z-0 relative">
+
+    <!-- Hover overlay -->
+<div 
+  class="absolute inset-0 bg-black/40 opacity-0 
+         group-hover:opacity-100 transition-all duration-500 
+         flex items-center justify-center gap-3
+         z-10 pointer-events-auto">
+
       <a href="{% url 'main:product_detail' product.id %}" 
-         class="px-4 py-2 bg-white text-black text-sm font-medium rounded-full hover:bg-black hover:text-white transition-all">
+         class="relative z-20 px-4 py-2 bg-white text-black text-sm font-medium rounded-full hover:bg-black hover:text-white transition-all">
         View Details
       </a>
-      <a href="{% url 'main:edit_product' product.id %}" 
-         class="px-4 py-2 bg-gray-200 text-gray-800 text-sm font-medium rounded-full hover:bg-black hover:text-white transition-all">
+
+      <button onclick="openEditModal('{{ product.id }}')" 
+              class="relative z-20 px-4 py-2 bg-yellow-400 text-black text-sm font-medium rounded-full hover:bg-yellow-500 transition-all">
         Edit
-      </a>
-      <form hx-post="{% url 'main:delete_product' product.id %}"
-            hx-target="#product-container"
-            hx-swap="innerHTML"
-            method="POST">
+      </button>
+
+      <form 
+        hx-post="{% url 'main:delete_product' product.id %}"
+        hx-target="#product-container"
+        hx-swap="innerHTML"
+        method="POST"
+        class="relative z-20 inline-block">
         {% csrf_token %}
         <button 
-        type="button"
-        class="delete-btn px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-full hover:bg-red-600 transition-all"
-        data-id="{{ product.id }}"
-        >
-        Delete
+          type="button"
+          class="delete-btn px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-full hover:bg-red-600 transition-all"
+          data-id="{{ product.id }}">
+          Delete
         </button>
       </form>
     </div>
