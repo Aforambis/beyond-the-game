@@ -1,8 +1,7 @@
 from django.urls import path, include
 from django.contrib import admin
 from .views import show_main, show_json, show_xml, show_json_by_id, show_xml_by_id, show_products, product_detail, add_product
-from main.views import register, login_user
-from main.views import logout_user
+from main.views import register, login_user, logout_user, show_json_user_products 
 from .views import add_auction_season, place_bid
 from .views import delete_product, edit_product
 from . import views
@@ -14,6 +13,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', show_main, name='show_main'),
     path('json/', show_json, name="show_json"),
+    path('json/user/', show_json_user_products, name="show_json_user_products"), 
     path('xml/', show_xml, name="show_xml"),
     path('json/<uuid:id>/', show_json_by_id, name="show_json_by_id"),
     path('xml/<uuid:id>/', show_xml_by_id, name="show_xml_by_id"),

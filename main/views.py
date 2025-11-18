@@ -20,6 +20,7 @@ from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 
 from .forms import ProductForm, AuctionSeasonForm, BidForm, CustomUserCreationForm, UsernameChangeForm
+from django.contrib.auth.decorators import login_required 
 
 @login_required(login_url='/login')
 def show_main(request):
@@ -351,10 +352,14 @@ def api_register(request):
 def get_edit_product_form(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
-    # Security Check: Ensure the user owns the product
     if product.user != request.user:
         return HttpResponseForbidden("You are not allowed to edit this product.")
         
     form = ProductForm(instance=product)
     context = {'form': form, 'product': product}
     return render(request, 'main/edit_product_form.html', context)
+
+@login_required
+def show_json_user_products(request):
+    data = Product.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
